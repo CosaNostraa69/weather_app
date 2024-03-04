@@ -28,7 +28,14 @@ class WeatherService{
 
     // fetch the current location
 
-    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    Position position;
+try {
+  position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+} catch (e) {
+  print("Erreur lors de la récupération de la position : $e");
+  return "";
+}
+
 
     // convert the location into a list of placemark objects
 
