@@ -21,21 +21,26 @@ class WeatherService{
   Future<String> getCurrentCity() async{
 
     // get permission from user
-    LocationPermission permission = await Geolocator.checkPermission();
-    if(permission == LocationPermission.denied){
-      permission = await Geolocator.requestPermission();
-    }
+LocationPermission permission = await Geolocator.checkPermission();
 
-    // fetch the current location
+if (permission == LocationPermission.denied) {
+  permission = await Geolocator.requestPermission();
+  if (permission == LocationPermission.denied) {
+    // Les permissions ont été refusées.
+    print("Les permissions de localisation ont été refusées.");
+    return "";
+  }
+}
 
-    Position position;
-try {
-  position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-} catch (e) {
-  print("Erreur lors de la récupération de la position : $e");
+if (permission == LocationPermission.deniedForever) {
+  // Les permissions ont été refusées de façon permanente, on ne peut pas demander les permissions.
+  print("Les permissions de localisation ont été refusées de façon permanente.");
   return "";
 }
 
+    // fetch the current location
+
+    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
 
     // convert the location into a list of placemark objects
 
